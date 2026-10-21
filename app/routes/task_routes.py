@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, make_response, request
+from flask import Blueprint, abort, make_response, request, Response
 from .route_utilities import validate_model
 from app.models.task import Task
 from ..db import db
@@ -29,9 +29,23 @@ def get_all_tasks():
 
     return tasks_response
 
-# READ one task
+# READ a task
 @bp.get("/<task_id>")
 def get_one_task(task_id):
     task = validate_model(Task, task_id)
 
     return task.to_dict()
+
+# UPDATE a task
+@bp.put("/<task_id>")
+def update_task(task_id):
+    task = validate_model(Task, task_id)
+
+    request_body = request.get_json()
+    task.title = request_body["title"]
+    task.description = request_body["description"]
+
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
