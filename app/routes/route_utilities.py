@@ -13,3 +13,7 @@ def validate_model(cls, id):
         abort(make_response({"message": f"{cls.__name__} {id} not found"}, 404))
 
     return model
+
+def validate_data(data):
+    if "title" not in data or "description" not in data:
+        abort(make_response({"details": "Invalid data"}, 400))

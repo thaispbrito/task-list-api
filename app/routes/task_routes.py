@@ -1,5 +1,5 @@
 from flask import Blueprint, abort, make_response, request, Response
-from .route_utilities import validate_model
+from .route_utilities import validate_model, validate_data
 from app.models.task import Task
 from ..db import db
 
@@ -9,6 +9,7 @@ bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
 @bp.post("")
 def create_task():
     request_body = request.get_json()
+    validate_data(request_body)
 
     new_task = Task.from_dict(request_body)
     db.session.add(new_task)
@@ -49,3 +50,12 @@ def update_task(task_id):
 
     return Response(status=204, mimetype="application/json")
 
+# DELETE a task
+@bp.delete("/<task_id>")
+def delete_task(task_id):
+    task = validate_model(Task, task_id)
+
+    db.session.delete(task)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
