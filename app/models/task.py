@@ -11,7 +11,6 @@ class Task(db.Model):
     completed_at: Mapped[Optional[datetime]]
 
     def to_dict(self):
-
         return dict(
             id=self.id, 
             title=self.title, 
@@ -23,7 +22,7 @@ class Task(db.Model):
     def from_dict(cls, task_data):
         if "completed_at" in task_data:
             completed_at = task_data["completed_at"]
-        elif task_data["is_complete"]:
+        elif task_data.get("is_complete", False):
             completed_at = datetime.now()
         else:
             completed_at = None
