@@ -1,4 +1,5 @@
 from flask import Blueprint, abort, make_response, request
+from .route_utilities import validate_model
 from app.models.task import Task
 from ..db import db
 
@@ -28,3 +29,9 @@ def get_all_tasks():
 
     return tasks_response
 
+# READ one task
+@bp.get("/<task_id>")
+def get_one_task(task_id):
+    task = validate_model(Task, task_id)
+
+    return task.to_dict()
