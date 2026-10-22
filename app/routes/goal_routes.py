@@ -12,3 +12,16 @@ bp = Blueprint("goals_bp", __name__, url_prefix="/goals")
 def create_goal():
     request_body = request.get_json()
     return create_model_with_response(Goal, request_body)
+
+# READ goals
+@bp.get("")
+def get_all_goals():
+    query = db.select(Goal).order_by(Goal.id)
+
+    goals = db.session.scalars(query)
+
+    goals_response = []
+    for goal in goals: 
+        goals_response.append(goal.to_dict())
+
+    return goals_response
