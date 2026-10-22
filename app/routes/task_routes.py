@@ -1,5 +1,5 @@
 from flask import Blueprint, abort, make_response, request, Response
-from .route_utilities import validate_model, validate_data
+from .route_utilities import create_model_with_response, validate_model, create_model_with_response
 from app.models.task import Task
 from ..db import db
 
@@ -9,18 +9,11 @@ bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
 @bp.post("")
 def create_task():
     request_body = request.get_json()
-    validate_data(request_body)
-
-    new_task = Task.from_dict(request_body)
-    db.session.add(new_task)
-    db.session.commit()
-
-    return new_task.to_dict(), 201
+    return create_model_with_response(Task, request_body)
 
 # READ tasks
 @bp.get("")
 def get_all_tasks():
-
     query = db.select(Task)
     sort_param = request.args.get("sort")
 
@@ -45,7 +38,6 @@ def get_all_tasks():
 @bp.get("/<task_id>")
 def get_one_task(task_id):
     task = validate_model(Task, task_id)
-
     return task.to_dict()
 
 # UPDATE a task

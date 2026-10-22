@@ -14,6 +14,14 @@ def validate_model(cls, id):
 
     return model
 
-def validate_data(data):
-    if "title" not in data or "description" not in data:
-        abort(make_response({"details": "Invalid data"}, 400))
+def create_model_with_response(cls, model_data):
+    try:
+        new_model = cls.from_dict(model_data)
+    except KeyError as e:
+        response = {"details": "Invalid data"}
+        abort(make_response(response, 400))
+    
+    db.session.add(new_model)
+    db.session.commit()
+
+    return new_model.to_dict(), 201  
