@@ -25,3 +25,10 @@ def get_all_goals():
         goals_response.append(goal.to_dict())
 
     return goals_response
+
+# READ a goal
+@bp.get("/<goal_id>")
+def get_one_goal(goal_id):
+    goal = validate_model(Goal, goal_id)
+    return goal.to_dict()
+
