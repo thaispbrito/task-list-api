@@ -1,6 +1,7 @@
 from flask import Blueprint, abort, make_response, request, Response
 from .route_utilities import create_model_with_response, validate_model, create_model_with_response
 from app.models.task import Task
+from datetime import datetime
 from ..db import db
 
 bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
@@ -59,6 +60,30 @@ def delete_task(task_id):
     task = validate_model(Task, task_id)
 
     db.session.delete(task)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+# CREATING CUSTOM ENDPOINTS
+
+# Mark Complete on an Incomplete/Complete Task
+@bp.patch("/<task_id>/mark_complete")
+def update_task_marking_complete(task_id):
+    task = validate_model(Task, task_id)
+
+    task.completed_at = datetime.now()
+
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+# Mark Incomplete on an Incomplete/Complete Task
+@bp.patch("/<task_id>/mark_incomplete")
+def update_task_marking_incomplete(task_id):
+    task = validate_model(Task, task_id)
+
+    task.completed_at = None
+
     db.session.commit()
 
     return Response(status=204, mimetype="application/json")
