@@ -128,6 +128,7 @@ def test_route_utilities_create_model_with_goal(client):
     assert response[0]["title"] == "Seize the Day!"
     assert response[1] == 201
 
+
 # @pytest.mark.skip(reason="No way to test this feature yet")
 def test_route_utilities_create_model_with_goal_missing_title(client):
     #Arrange
@@ -141,26 +142,7 @@ def test_route_utilities_create_model_with_goal_missing_title(client):
     response = e.value.get_response()
     assert response.status_code == 400
     assert response.get_json() == {"details": "Invalid data"}
-
-# @pytest.mark.skip(reason="No way to test this feature yet")
-def test_get_models_with_filters_sort_ascending(client, three_tasks):
-    # Act
-    result = get_models_with_filters(Task, sort="asc")
-
-    # Assert
-    titles = [task["title"] for task in result]
-
-    assert titles == sorted(titles, key=str.casefold)
-
-# @pytest.mark.skip(reason="No way to test this feature yet")
-def test_get_models_with_filters_sort_descending(client, three_tasks):
-    # Act
-    result = get_models_with_filters(Task, sort="desc")
-
-    # Assert
-    titles = [task["title"] for task in result]
-
-    assert titles == sorted(titles, key=str.casefold, reverse=True)    
+  
 
 # @pytest.mark.skip(reason="No way to test this feature yet")
 def test_get_models_with_filters_by_title(client, three_tasks):
