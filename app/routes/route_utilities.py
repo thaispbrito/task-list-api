@@ -32,11 +32,10 @@ def get_models_with_filters(cls, filters=None, sort=None):
     if filters:
         for attribute, value in filters.items():
             if hasattr(cls, attribute):
-                column = getattr(cls, attribute)
-                query = query.where(column.ilike(f"%{value}%"))
+                query = query.where(getattr(cls, attribute).ilike(f"%{value}%"))
 
     if sort == "asc":
-        query = query.order_by(cls.title.asc())
+        query = query.order_by(cls.title)
     elif sort == "desc":
         query = query.order_by(cls.title.desc())
     else:

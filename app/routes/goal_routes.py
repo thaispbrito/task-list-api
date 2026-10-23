@@ -63,7 +63,7 @@ def add_tasks_to_goal(goal_id):
     return {
         "id": goal.id,
         "task_ids": [task.id for task in goal.tasks]
-    }, 200
+    }
 
 # READ all tasks from a specific goal
 @bp.get("/<goal_id>/tasks")
