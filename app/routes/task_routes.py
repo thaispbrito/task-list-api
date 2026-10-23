@@ -1,5 +1,5 @@
 from flask import Blueprint, request, Response
-from .route_utilities import validate_model, create_model
+from .route_utilities import validate_model, create_model, get_models_with_filters
 from app.models.task import Task
 from datetime import datetime
 from ..db import db
@@ -16,25 +16,13 @@ def create_task():
 # READ tasks
 @bp.get("")
 def get_all_tasks():
-    query = db.select(Task)
-    sort_param = request.args.get("sort")
+    filters = {}
 
-    if sort_param == "asc":
-        query = query.order_by(Task.title)
+    if request.args.get("title"):
+        filters["title"] = request.args.get("title")
+    sort = request.args.get("sort")
 
-    elif sort_param == "desc":
-        query = query.order_by(Task.title.desc())
-
-    else:    
-        query = query.order_by(Task.id)
-
-    tasks = db.session.scalars(query)
-
-    tasks_response = []
-    for task in tasks: 
-        tasks_response.append(task.to_dict())
-
-    return tasks_response
+    return get_models_with_filters(Task, filters, sort)
 
 # READ a task
 @bp.get("/<task_id>")
@@ -71,7 +59,6 @@ def delete_task(task_id):
 @bp.patch("/<task_id>/mark_complete")
 def update_task_marking_complete(task_id):
     task = validate_model(Task, task_id)
-
     task.completed_at = datetime.now()
 
     db.session.commit()
@@ -96,7 +83,6 @@ def update_task_marking_complete(task_id):
 @bp.patch("/<task_id>/mark_incomplete")
 def update_task_marking_incomplete(task_id):
     task = validate_model(Task, task_id)
-
     task.completed_at = None
 
     db.session.commit()

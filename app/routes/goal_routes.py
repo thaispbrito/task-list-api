@@ -1,5 +1,5 @@
 from flask import Blueprint, request, Response
-from .route_utilities import validate_model, create_model
+from .route_utilities import validate_model, create_model, get_models_with_filters
 from app.models.goal import Goal
 from app.models.task import Task
 from datetime import datetime
@@ -16,15 +16,8 @@ def create_goal():
 # READ goals
 @bp.get("")
 def get_all_goals():
-    query = db.select(Goal).order_by(Goal.id)
-
-    goals = db.session.scalars(query)
-
-    goals_response = []
-    for goal in goals: 
-        goals_response.append(goal.to_dict())
-
-    return goals_response
+    sort = request.args.get("sort")
+    return get_models_with_filters(Goal, sort=sort)
 
 # READ a goal
 @bp.get("/<goal_id>")
