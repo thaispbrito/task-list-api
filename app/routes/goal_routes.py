@@ -1,5 +1,5 @@
 from flask import Blueprint, request, Response
-from .route_utilities import create_model_with_response, validate_model, create_model_with_response
+from .route_utilities import validate_model, create_model
 from app.models.goal import Goal
 from app.models.task import Task
 from datetime import datetime
@@ -11,7 +11,7 @@ bp = Blueprint("goals_bp", __name__, url_prefix="/goals")
 @bp.post("")
 def create_goal():
     request_body = request.get_json()
-    return create_model_with_response(Goal, request_body)
+    return create_model(Goal, request_body)
 
 # READ goals
 @bp.get("")
@@ -78,4 +78,7 @@ def get_all_tasks_from_goal(goal_id):
     goal = validate_model(Goal, goal_id)
     tasks = [task.to_dict() for task in goal.tasks]
 
-    return goal.to_dict()
+    goal_dict = goal.to_dict()
+    goal_dict["tasks"] = [task.to_dict() for task in goal.tasks]
+
+    return goal_dict

@@ -14,7 +14,7 @@ def validate_model(cls, id):
 
     return model
 
-def create_model_with_response(cls, model_data):
+def create_model(cls, model_data):
     try:
         new_model = cls.from_dict(model_data)
     except KeyError as e:
